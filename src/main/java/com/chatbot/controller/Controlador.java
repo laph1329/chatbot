@@ -4,9 +4,11 @@ import org.apache.commons.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/saludo")
@@ -17,11 +19,35 @@ public class Controlador {
         return ResponseEntity.status(HttpStatus.OK).body("Hola mundo");
     }
 
+    @Value("${token}")
+    private String token;
+    private String phone_number_id = "100940642691350";
+    private String from = "51963455195";
+    private String msg_body = "Hola desde el webhook";
     @PostMapping("/webhook")
-    public ResponseEntity<String> webhook(@RequestBody Object payload) {
-        System.out.println("*****payload*****");
-        logger.info(payload.toString());
-        System.out.println("*****FIN-payload*****");
+    public ResponseEntity<String> webhook(@RequestBody Map<String, Object> payload) {
+        try {
+            System.out.println("*****payload*****");
+            logger.info(payload.toString());
+            System.out.println("*****FIN-payload*****");
+        }catch (Exception e) {
+            logger.error("Error al procesar el webhook", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = "https://graph.facebook.com/v12.0/" + phone_number_id + "/messages?access_token=" + token;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String requestBody = "{\"messaging_product\": \"whatsapp\", \"to\": \"" + from + "\", \"text\": {\"body\": \"Ack: " + msg_body + "\"}}";
+        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+
 //        if (payload.getObject() != null && payload.getEntry() != null && payload.getEntry().size() > 0) {
 //            WebhookEntry entry = payload.getEntry().get(0);
 //            if (entry.getChanges() != null && entry.getChanges().size() > 0) {
