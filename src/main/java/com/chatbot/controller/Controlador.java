@@ -37,7 +37,7 @@ public class Controlador {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        String url = "https://graph.facebook.com/v12.0/" + phone_number_id + "/messages?access_token=" + token;
+        String url = "https://graph.facebook.com/v16.0/" + phone_number_id + "/messages?access_token=" + token;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
