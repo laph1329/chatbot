@@ -27,30 +27,32 @@ public class Controlador {
     private String from = "51963455195";
     private String msg_body = "Hola desde el webhook";
     @PostMapping("/webhook")
-    public ResponseEntity<String> webhook(@RequestBody JSONObject payload) {
+    public ResponseEntity<String> webhook(@RequestBody Map<String,Object> payloadObject) {
+        JSONObject payload = new JSONObject(payloadObject);
         try {
             System.out.println("*****payload*****");
             logger.info(payload.toString());
             System.out.println("*****FIN-payload*****");
+            if(payload.getJSONObject("entry").isEmpty() &&
+                    payload.getJSONArray("entry").getJSONObject(0).isEmpty() &&
+                    payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).getJSONObject("value").getJSONArray("messages").getJSONObject(0).get("from").toString().isEmpty()
+            ) {
+                String url = "https://graph.facebook.com/v16.0/" + phone_number_id + "/messages?access_token=" + token;
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+
+                String requestBody = "{\"messaging_product\": \"whatsapp\", \"to\": \"" + from + "\", \"text\": {\"body\": \"Ack: " + msg_body + "\"}}";
+                HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+
+                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+                return ResponseEntity.ok().build();
+            }
         }catch (Exception e) {
             logger.error("Error al procesar el webhook", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        if(payload.getJSONObject("entry").isEmpty() &&
-                payload.getJSONArray("entry").getJSONObject(0).isEmpty() &&
-                payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).getJSONObject("value").getJSONArray("messages").getJSONObject(0).get("from").toString().isEmpty()
-        ) {
-            String url = "https://graph.facebook.com/v16.0/" + phone_number_id + "/messages?access_token=" + token;
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            String requestBody = "{\"messaging_product\": \"whatsapp\", \"to\": \"" + from + "\", \"text\": {\"body\": \"Ack: " + msg_body + "\"}}";
-            HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
-
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-            return ResponseEntity.ok().build();
-        }
 
 
 
