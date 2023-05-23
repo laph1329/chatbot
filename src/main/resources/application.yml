@@ -1,0 +1,24 @@
+server:
+  port: 8087
+spring:
+  datasource:
+    initialize: false
+    url: ${db.url:jdbc:mysql://localhost:3307/reclamos}
+    username: ${db.username:root}
+    password: ${db.password:byte}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: claims-config-service
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: false
+
+  main:
+    allow-bean-definition-overriding: true
+#  profiles:
+#    include: 'keycloak'
