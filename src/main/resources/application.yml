@@ -20,5 +20,4 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
-#  profiles:
-#    include: 'keycloak'
+webhook_token: LAPH1329@PEQS
