@@ -1,6 +1,7 @@
 package com.chatbot.controller;
 
 import org.apache.commons.logging.Log;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,13 +20,14 @@ public class Controlador {
         return ResponseEntity.status(HttpStatus.OK).body("Hola mundo");
     }
 
+    RestTemplate restTemplate = new RestTemplate();
     @Value("${token}")
     private String token;
     private String phone_number_id = "100940642691350";
     private String from = "51963455195";
     private String msg_body = "Hola desde el webhook";
     @PostMapping("/webhook")
-    public ResponseEntity<String> webhook(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<String> webhook(@RequestBody JSONObject payload) {
         try {
             System.out.println("*****payload*****");
             logger.info(payload.toString());
@@ -34,18 +36,25 @@ public class Controlador {
             logger.error("Error al procesar el webhook", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+        if(payload.getJSONObject("entry").isEmpty() &&
+                payload.getJSONArray("entry").getJSONObject(0).isEmpty() &&
+                payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).getJSONObject("value").getJSONArray("messages").getJSONObject(0).get("from").toString().isEmpty()
+        ) {
+            String url = "https://graph.facebook.com/v16.0/" + phone_number_id + "/messages?access_token=" + token;
 
-        RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String url = "https://graph.facebook.com/v16.0/" + phone_number_id + "/messages?access_token=" + token;
+            String requestBody = "{\"messaging_product\": \"whatsapp\", \"to\": \"" + from + "\", \"text\": {\"body\": \"Ack: " + msg_body + "\"}}";
+            HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            return ResponseEntity.ok().build();
+        }
 
-        String requestBody = "{\"messaging_product\": \"whatsapp\", \"to\": \"" + from + "\", \"text\": {\"body\": \"Ack: " + msg_body + "\"}}";
-        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+
 
 
 //        if (payload.getObject() != null && payload.getEntry() != null && payload.getEntry().size() > 0) {
