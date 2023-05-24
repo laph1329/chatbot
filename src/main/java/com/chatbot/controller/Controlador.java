@@ -52,7 +52,7 @@ public class Controlador {
             }
             else{
                 logger.info("Aqui no hay mensajes");
-                return ResponseEntity.ok(msg_body);
+                return ResponseEntity.notFound().build();
             }
         }catch (Exception e) {
             logger.error("Error al procesar el webhook", e);
