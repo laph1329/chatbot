@@ -29,16 +29,18 @@ public class Controlador {
     @PostMapping("/webhook")
     public ResponseEntity<String> webhook(@RequestBody Map<String,Object> payloadObject) {
         JSONObject payload = new JSONObject(payloadObject);
+        System.out.println("*****payload*****");
+        logger.info(payload.toString());
+        System.out.println("*****FIN-payload*****");
         try {
-            System.out.println("*****payload*****");
-            logger.info(payload.toString());
-            System.out.println("*****FIN-payload*****");
+
             if(!payload.getJSONArray("entry").isEmpty() &&
                     !payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").isEmpty() &&
                     payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).optJSONObject("value") != null &&
                     payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).optJSONObject("value").optJSONArray("messages") != null &&
                     payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).optJSONObject("value").optJSONArray("messages").optJSONObject(0) != null
             ) {
+                logger.info("************Aqui SIIIIIIIIIIIIIIIIII hay mensajesssss***********");
                 String url = "https://graph.facebook.com/v16.0/" + phone_number_id + "/messages?access_token=" + token;
 
                 HttpHeaders headers = new HttpHeaders();
