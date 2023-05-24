@@ -27,7 +27,7 @@ public class Controlador {
     private String from = "51963455195";
     private String msg_body = "Hola desde el webhook";
     @PostMapping("/webhook")
-    public ResponseEntity<Void> webhook(@RequestBody Map<String,Object> payloadObject) {
+    public void webhook(@RequestBody Map<String,Object> payloadObject) {
         JSONObject payload = new JSONObject(payloadObject);
         System.out.println("*****payload*****");
         logger.info(payload.toString());
@@ -50,15 +50,15 @@ public class Controlador {
                 HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
                 ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-                return ResponseEntity.ok().build();
+//                return ResponseEntity.ok().build();
             }
             else{
                 logger.info("************Aqui no hay mensajesssss***********");
-                return ResponseEntity.notFound().build();
+//                return ResponseEntity.notFound().build();
             }
         }catch (Exception e) {
             logger.error("Error al procesar el webhook", e);
-            return ResponseEntity.notFound().build();
+//            return ResponseEntity.notFound().build();
         }
 
 
