@@ -36,7 +36,6 @@ public class Controlador {
             if(!payload.getJSONArray("entry").isEmpty() &&
                     !payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").isEmpty() &&
                     !payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).isEmpty() &&
-                    !payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).getJSONObject("value").getJSONObject("messages").isEmpty() &&
                     !payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).getJSONObject("value").getJSONArray("messages").isEmpty() &&
                    ! payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).getJSONObject("value").getJSONArray("messages").getJSONObject(0).isEmpty()
             ) {
