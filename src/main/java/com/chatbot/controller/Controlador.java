@@ -56,7 +56,7 @@ public class Controlador {
             }
         }catch (Exception e) {
             logger.error("Error al procesar el webhook", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.notFound().build();
         }
 
 
