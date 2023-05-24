@@ -50,6 +50,10 @@ public class Controlador {
                 ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
                 return ResponseEntity.ok().build();
             }
+            else{
+                logger.info("Aqui no hay mensajes");
+                return ResponseEntity.ok(msg_body);
+            }
         }catch (Exception e) {
             logger.error("Error al procesar el webhook", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -74,7 +78,6 @@ public class Controlador {
 //                }
 //            }
 //        }
-        return ResponseEntity.ok().build();
     }
 
     @Value("${webhook_token}")
