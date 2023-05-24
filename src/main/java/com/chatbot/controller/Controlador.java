@@ -27,7 +27,7 @@ public class Controlador {
     private String from = "51963455195";
     private String msg_body = "Hola desde el webhook";
     @PostMapping("/webhook")
-    public ResponseEntity<String> webhook(@RequestBody Map<String,Object> payloadObject) {
+    public ResponseEntity<Void> webhook(@RequestBody Map<String,Object> payloadObject) {
         JSONObject payload = new JSONObject(payloadObject);
         System.out.println("*****payload*****");
         logger.info(payload.toString());
