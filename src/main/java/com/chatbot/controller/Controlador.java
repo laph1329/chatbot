@@ -35,9 +35,9 @@ public class Controlador {
             System.out.println("*****FIN-payload*****");
             if(!payload.getJSONArray("entry").isEmpty() &&
                     !payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").isEmpty() &&
-                    !payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).isEmpty() &&
-                    !payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).getJSONObject("value").getJSONArray("messages").isEmpty() &&
-                   ! payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).getJSONObject("value").getJSONArray("messages").getJSONObject(0).isEmpty()
+                    payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).optJSONObject("value") != null &&
+                    payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).optJSONObject("value").optJSONArray("messages") != null &&
+                    payload.getJSONArray("entry").getJSONObject(0).getJSONArray("changes").getJSONObject(0).optJSONObject("value").optJSONArray("messages").optJSONObject(0) != null
             ) {
                 String url = "https://graph.facebook.com/v16.0/" + phone_number_id + "/messages?access_token=" + token;
 
